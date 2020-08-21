@@ -15,6 +15,13 @@ public class PlayerVerticle extends AbstractVerticle {
     @Override
     public void start(Promise<Void> startPromise) {
         System.out.println("I'm a player");
-        vertx.eventBus().send(this.dealer_address, "Hello");
+        vertx.eventBus().request(this.dealer_address, "I'm ready to play!", ar->{
+            if(ar.succeeded()){
+                System.out.println("reply: " + ar.result().body());
+            }
+        });
+        vertx.eventBus().consumer(this.table_address, message->{
+            System.out.println("dealer: " + message.body());
+        });
     }
 }

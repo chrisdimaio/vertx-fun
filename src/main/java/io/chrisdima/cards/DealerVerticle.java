@@ -18,6 +18,7 @@ public class DealerVerticle extends AbstractVerticle {
 
         vertx.eventBus().consumer(this.dealer_address, message->{
            System.out.println("message: " + message.body());
+           message.reply("Got it");
         });
     }
 }
