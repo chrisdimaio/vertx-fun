@@ -12,6 +12,7 @@ public class App
     {
         System.out.println( "My Vertx App!" );
         Vertx vertx = Vertx.vertx();
-        vertx.deployVerticle(new AVerticle());
+        vertx.deployVerticle(new AVerticle("0"));
+        vertx.deployVerticle(new AVerticle("1"));
     }
 }
