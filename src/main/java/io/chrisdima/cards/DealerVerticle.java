@@ -28,17 +28,17 @@ public class DealerVerticle extends AbstractVerticle {
             }
             if(this.activePlayers == this.playerCount){
                 System.out.println("table is ready to play!");
-                dealerACard();
-                dealerACard();
-                dealerACard();
-                dealerACard();
-                dealerACard();
+                dealACard();
+                dealACard();
+                dealACard();
+                dealACard();
+                dealACard();
                 vertx.eventBus().publish(this.tableAddress, SHOW_HAND);
             }
         });
     }
 
-    public void dealerACard(){
+    public void dealACard(){
         for (int i = 0; i < this.playerCount; i++) {
             vertx.eventBus().send(this.tableAddress, i);
         }
