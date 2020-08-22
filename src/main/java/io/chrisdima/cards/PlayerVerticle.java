@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static io.chrisdima.cards.Messages.READY;
+import static io.chrisdima.cards.Messages.SHOW_HAND;
 
 public class PlayerVerticle extends AbstractVerticle {
     private final int id;
@@ -36,7 +37,9 @@ public class PlayerVerticle extends AbstractVerticle {
             if(this.hand.size() < 5){
                 this.hand.add((int)message.body());
             }
-            System.out.println("player " + id + "'s hand: " + this.hand);
+            if(message.body() == SHOW_HAND) {
+                System.out.println("player " + id + "'s hand: " + this.hand);
+            }
         });
     }
 }

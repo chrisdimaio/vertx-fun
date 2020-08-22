@@ -3,8 +3,7 @@ package io.chrisdima.cards;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Promise;
 
-import static io.chrisdima.cards.Messages.READY;
-import static io.chrisdima.cards.Messages.READY_REPLY;
+import static io.chrisdima.cards.Messages.*;
 
 public class DealerVerticle extends AbstractVerticle {
     private final String dealerAddress;
@@ -26,7 +25,6 @@ public class DealerVerticle extends AbstractVerticle {
             if(message.body() == READY) {
                 message.reply(READY_REPLY);
                 this.activePlayers++;
-                System.out.println(this.activePlayers);
             }
             if(this.activePlayers == this.playerCount){
                 System.out.println("table is ready to play!");
@@ -35,6 +33,7 @@ public class DealerVerticle extends AbstractVerticle {
                 dealerACard();
                 dealerACard();
                 dealerACard();
+                vertx.eventBus().publish(this.tableAddress, SHOW_HAND);
             }
         });
     }
