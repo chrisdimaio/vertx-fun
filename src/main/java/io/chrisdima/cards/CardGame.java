@@ -9,7 +9,10 @@ public class CardGame {
     public static void main( String[] args )
     {
         Vertx vertx = Vertx.vertx();
+
         vertx.deployVerticle(new DealerVerticle(DEALER_ADDRESS, TABLE_ADDRESS, 5));
-        vertx.deployVerticle(new PlayerVerticle(DEALER_ADDRESS, TABLE_ADDRESS));
+        for (int i = 0; i < 5; i++) {
+            vertx.deployVerticle(new PlayerVerticle(DEALER_ADDRESS, TABLE_ADDRESS, i));
+        }
     }
 }
