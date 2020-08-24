@@ -4,7 +4,6 @@ import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Promise;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import static io.chrisdima.cards.Messages.READY;
 import static io.chrisdima.cards.Messages.SHOW_HAND;

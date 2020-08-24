@@ -5,10 +5,19 @@ import io.vertx.core.Promise;
 
 import static io.chrisdima.cards.Messages.*;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.stream.IntStream;
+
 public class DealerVerticle extends AbstractVerticle {
+    private static final int CARDS_IN_DECK = 52;
+    private static final int CARDS_IN_HAND = 5;
+
     private final String dealerAddress;
     private final String tableAddress;
     private final int playerCount;
+
+    private final ArrayList<Integer> deck = new ArrayList<>(52);
 
     private int activePlayers = 0;
 
@@ -16,6 +25,8 @@ public class DealerVerticle extends AbstractVerticle {
         this.dealerAddress = dealerAddress;
         this.tableAddress = tableAddress;
         this.playerCount = playerCount;
+
+        IntStream.iterate(0,i->i+1).limit(CARDS_IN_DECK).forEach(this.deck::add);
     }
 
     @Override
@@ -28,19 +39,14 @@ public class DealerVerticle extends AbstractVerticle {
             }
             if(this.activePlayers == this.playerCount){
                 System.out.println("table is ready to play!");
-                dealACard();
-                dealACard();
-                dealACard();
-                dealACard();
-                dealACard();
+                Collections.shuffle(deck);
+                this.deck.stream().limit(this.activePlayers * CARDS_IN_HAND).forEach(this::dealACard);
                 vertx.eventBus().publish(this.tableAddress, SHOW_HAND);
             }
         });
     }
 
-    public void dealACard(){
-        for (int i = 0; i < this.playerCount; i++) {
-            vertx.eventBus().send(this.tableAddress, i);
-        }
+    public void dealACard(int card){
+        vertx.eventBus().send(this.tableAddress, card);
     }
 }
