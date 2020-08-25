@@ -56,11 +56,11 @@ public class DealerVerticle extends AbstractVerticle {
         vertx.eventBus().publish(this.tableAddress, message);
     }
 
-    private void sendReadyReply(Message originalMessage){
+    private void sendReadyReply(Message<PokerMessage> originalMessage){
         PokerMessage message = new PokerMessage();
         message.setSender(NAME);
         message.setCommand(READY_REPLY);
-        originalMessage.<PokerMessage>reply(message);
+        originalMessage.reply(message);
     }
 
     public void sendDealtCard(int card){
