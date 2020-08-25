@@ -1,4 +1,4 @@
-package io.chrisdima.cards.codecs;
+package io.chrisdima.cards;
 
 import lombok.Getter;
 import lombok.Setter;

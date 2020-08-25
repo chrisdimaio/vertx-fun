@@ -1,9 +1,8 @@
 package io.chrisdima.cards;
 
-import io.chrisdima.cards.codecs.PokerMessage;
-import io.chrisdima.cards.codecs.PokerMessageCodec;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Promise;
+import io.vertx.core.eventbus.Message;
 
 import static io.chrisdima.cards.Messages.*;
 
@@ -36,31 +35,37 @@ public class DealerVerticle extends AbstractVerticle {
     @Override
     public void start(Promise<Void> starPromise) {
         System.out.println("Dealer verticle is up!");
-        vertx.eventBus().registerDefaultCodec(PokerMessage.class, new PokerMessageCodec());
-        vertx.eventBus().consumer(this.dealerAddress, message->{
-            if(message.body() == READY) {
-                message.reply(READY_REPLY);
+        vertx.eventBus().<PokerMessage>consumer(this.dealerAddress, message->{
+            if(message.body().getCommand().equals(READY)) {
+                sendReadyReply(message);
                 this.activePlayers++;
             }
             if(this.activePlayers == this.playerCount){
-                System.out.println("table is ready to play!");
+                System.out.println("Table is ready to play!");
                 Collections.shuffle(deck);
-                this.deck.stream().limit(this.activePlayers * CARDS_IN_HAND).forEach(this::dealACard);
-                vertx.eventBus().publish(this.tableAddress, SHOW_HAND);
+                this.deck.stream().limit(this.activePlayers * CARDS_IN_HAND).forEach(this::sendDealtCard);
+                sendShowHand();
             }
         });
     }
 
-    private void sendReadyReply(){
+    private void sendShowHand(){
+        PokerMessage message = new PokerMessage();
+        message.setSender(NAME);
+        message.setCommand(SHOW_HAND);
+        vertx.eventBus().publish(this.tableAddress, message);
+    }
+
+    private void sendReadyReply(Message originalMessage){
         PokerMessage message = new PokerMessage();
         message.setSender(NAME);
         message.setCommand(READY_REPLY);
-        message.<PokerMessage>reply(message);
+        originalMessage.<PokerMessage>reply(message);
     }
 
-    public void dealACard(int card){
+    public void sendDealtCard(int card){
         PokerMessage message = new PokerMessage();
-        message.setCommand(TAKE_CARD);
+        message.setCommand(DEALT_CARD);
         message.setPayload(String.valueOf(card));
         message.setSender(NAME);
         vertx.eventBus().send(this.tableAddress, message);
