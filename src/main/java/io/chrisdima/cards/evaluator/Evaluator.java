@@ -3,6 +3,7 @@ package io.chrisdima.cards.evaluator;
 import org.apache.commons.math3.stat.Frequency;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Evaluator {
     private static final List<Long> QUADS = Arrays.asList(1L, 4L);
@@ -18,17 +19,16 @@ public class Evaluator {
 //        String[] onePair = {"3", "3", "4", "5", "6"};
 
         ArrayList<Card> quads = new ArrayList<>();
+        quads.add(new Card(Rank.SIX, Suit.CLUBS));
+        quads.add(new Card(Rank.FIVE, Suit.CLUBS));
+        quads.add(new Card(Rank.FOUR, Suit.CLUBS));
         quads.add(new Card(Rank.THREE, Suit.CLUBS));
-        quads.add(new Card(Rank.THREE, Suit.CLUBS));
-        quads.add(new Card(Rank.THREE, Suit.CLUBS));
-        quads.add(new Card(Rank.THREE, Suit.CLUBS));
-        quads.add(new Card(Rank.KING, Suit.CLUBS));
+        quads.add(new Card(Rank.TWO, Suit.CLUBS));
 
         Hand hand = createHand(quads);
     }
     public static Hand createHand(ArrayList<Card> cards){
         Hand hand = new Hand(cards);
-        hand.setCards(cards);
         hand.setHistogram(getHistogram(cards));
         ArrayList<Long> counts = new ArrayList<>(hand.getHistogram().values());
         Collections.sort(counts);
@@ -48,12 +48,54 @@ public class Evaluator {
         } else if (hand.getCounts().size() == 4) {
             hand.setOnePair(true);
         }
+        hand.setFlush(cards.stream().map(Card::getSuit).distinct().limit(2).count() <= 1);
+        hand.setStraight(cards.get(cards.size()-1).getRank() - cards.get(0).getRank() == 4);
+        hand.setStraightFlush(hand.isStraight() && hand.isFlush());
+        hand.setHighCard(!(hand.isQuads() || hand.isBoat() || hand.isSet() || hand.isTwoPair() || hand.isOnePair()
+                || hand.isFlush()||hand.isStraight()||hand.isStraightFlush()));
+        if(hand.isHighCard()) {
+            hand.setHighestCard(cards.get(cards.size()-1));
+        }
+        System.out.println(hand.getHighestCard());
         return hand;
     }
-    public static boolean compare(Hand hand1, Hand Hand2){
+
+    /**
+     * Returns a boolean indicating which hand wins
+     * @param hand1
+     * @param hand2
+     * @return  true if hand1 beats hand2 else false
+     */
+    public static boolean compare(Hand hand1, Hand hand2){
+        if(hand1.isHighCard()){
+            if(hand2.isHighCard()){
+                if(hand1.getHighestCard().getRank() > hand2.getHighestCard().getRank()){
+                    return true;
+                } else if(hand1.getHighestCard().getRank() == hand2.getHighestCard().getRank()){
+                    return hand1.getHighestCard().getSuit() > hand2.getHighestCard().getSuit();
+                }
+            }
+            return false;
+        }
+        if(hand1.isOnePair()){
+            if(hand2.isHighCard()){
+                return true;
+            }
+            if(hand2.isOnePair()){
+                // hand1 get pair
+                // hand2 get pair
+                System.out.println(hand1.getHistogram());
+            }
+            return false;
+        }
         return false;
     }
-//    private static compareCounts()
+    private static Map<Integer, Long> getPairs(Hand hand){
+        return hand.getHistogram().entrySet()
+                .stream()
+                .filter(map -> map.getValue() == 2)
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+    }
     private static HashMap<Integer, Long> getHistogram(ArrayList<Card> cards){
         Frequency frequency = new Frequency();
         cards.forEach(c -> frequency.addValue(c.getRank()));
