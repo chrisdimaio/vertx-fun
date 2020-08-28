@@ -141,7 +141,6 @@ public class Evaluator {
     /**
      * Calculates a numerical value based off what the hand is by flipping th 0th to 8th
      * bits in a BitSet and converting the set to an int.
-     * For example, a high card would flip
      * @param hand
      * @return
      */
