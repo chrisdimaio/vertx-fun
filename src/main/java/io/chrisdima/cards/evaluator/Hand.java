@@ -12,11 +12,11 @@ public class Hand {
     private ArrayList<Card> cards;
     private HashMap<Integer, Long> histogram;
     private ArrayList<Long> counts;
-    private int topCard;
+    private int handValue;
     private Card highestCard;
     private boolean quads;
     private boolean boat;
-    private boolean set;
+    private boolean threeOfAKind;
     private boolean twoPair;
     private boolean onePair;
     private boolean flush;
@@ -25,6 +25,7 @@ public class Hand {
     private boolean highCard;
 
     public Hand(ArrayList<Card> cards){
+        System.out.println(cards);
         if(cards.size() == 5) {
             this.cards = cards;
             cards.sort(Comparator.comparing(Card::getRank));
