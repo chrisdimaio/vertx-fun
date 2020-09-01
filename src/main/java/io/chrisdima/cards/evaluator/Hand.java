@@ -26,9 +26,16 @@ public class Hand {
         if(cards.size() == 5) {
             cards.sort(Collections.reverseOrder());
             this.cards = cards;
-            System.out.println(cards);
         } else {
             throw new IllegalStateException("Requires 5 cards in hand.");
         }
+    }
+
+    public boolean containsByRank(int rank){
+        for (Card card: cards) {
+            if(card.getRank() == rank)
+                return true;
+        }
+        return false;
     }
 }

@@ -2,14 +2,12 @@ package io.chrisdima.cards.evaluator;
 
 import org.apache.commons.math3.stat.Frequency;
 
-import java.nio.ByteBuffer;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class Evaluator {
     private static final List<Long> QUADS = Arrays.asList(1L, 4L);
     private static final List<Long> BOAT = Arrays.asList(2L, 3L);
-    private static final List<Long> SET = Arrays.asList(3L, 1L, 1L);;
+    private static final List<Long> SET = Arrays.asList(3L, 1L, 1L);
     private static final List<Long> TWO_PAIR = Arrays.asList(2L, 2L, 1L);
 
     public static void main( String[] args ){
@@ -28,18 +26,18 @@ public class Evaluator {
         boat.add(new Card(Rank.THREE, Suit.SPADES));
 
         ArrayList<Card> highcard1 = new ArrayList<>();
-        highcard1.add(new Card(Rank.TWO, Suit.CLUBS));
-        highcard1.add(new Card(Rank.TWO, Suit.DIAMONDS));
-        highcard1.add(new Card(Rank.FOUR, Suit.SPADES));
-        highcard1.add(new Card(Rank.FOUR, Suit.CLUBS));
-        highcard1.add(new Card(Rank.NINE, Suit.SPADES));
+        highcard1.add(new Card(Rank.TEN, Suit.CLUBS));
+        highcard1.add(new Card(Rank.JACK, Suit.DIAMONDS));
+        highcard1.add(new Card(Rank.QUEEN, Suit.SPADES));
+        highcard1.add(new Card(Rank.KING, Suit.CLUBS));
+        highcard1.add(new Card(Rank.ACE, Suit.SPADES));
 
         ArrayList<Card> highcard2 = new ArrayList<>();
-        highcard2.add(new Card(Rank.SEVEN, Suit.CLUBS));
-        highcard2.add(new Card(Rank.THREE, Suit.DIAMONDS));
+        highcard2.add(new Card(Rank.ACE, Suit.CLUBS));
+        highcard2.add(new Card(Rank.TWO, Suit.DIAMONDS));
         highcard2.add(new Card(Rank.THREE, Suit.SPADES));
-        highcard2.add(new Card(Rank.SIX, Suit.CLUBS));
-        highcard2.add(new Card(Rank.SIX, Suit.HEARTS));
+        highcard2.add(new Card(Rank.FOUR, Suit.CLUBS));
+        highcard2.add(new Card(Rank.FIVE, Suit.HEARTS));
 
         Hand hand1 = createHand(highcard1);
         Hand hand2 = createHand(highcard2);
@@ -67,7 +65,7 @@ public class Evaluator {
             hand.setOnePair(true);
         }
         hand.setFlush(cards.stream().map(Card::getSuit).distinct().limit(2).count() <= 1);
-        hand.setStraight(cards.get(cards.size()-1).getRank() - cards.get(0).getRank() == 4);
+        hand.setStraight(testForStraight(hand));
         hand.setStraightFlush(hand.isStraight() && hand.isFlush());
         hand.setHighCard(!(hand.isQuads() || hand.isBoat() || hand.isThreeOfAKind() || hand.isTwoPair() || hand.isOnePair()
                 || hand.isFlush()||hand.isStraight()||hand.isStraightFlush()));
@@ -75,14 +73,13 @@ public class Evaluator {
             hand.setHighestCard(cards.get(cards.size()-1));
         }
         hand.setHandValue(calcHandValue(hand));
-//        System.out.println(hand.getHandValue());
         return hand;
     }
     /**
      * Returns a boolean indicating which hand wins
-     * @param hand1
-     * @param hand2
-     * @return  true if hand1 beats hand2 else false
+     * @param hand1 Hand that is doing the compare.
+     * @param hand2 Hand that is being compared to.
+     * @return  true if hand1 beats hand2 else false.
      */
     public static boolean compareHand(Hand hand1, Hand hand2){
         if(hand1.getHandValue() > hand2.getHandValue()){
@@ -90,64 +87,42 @@ public class Evaluator {
         } else if(hand1.getHandValue() < hand2.getHandValue()){
             return false;
         } else if(hand1.getHandValue() == hand2.getHandValue()){
-//            System.out.println(hand1.getCards());
-//            System.out.println(hand2.getCards());
             Grouped grouped1 = new Grouped(hand1);
             Grouped grouped2 = new Grouped(hand2);
-            return grouped1.compareTo(grouped2);
-//            if(hand1.isHighCard()){
-//                return compareCard(hand1.getHighestCard(), hand2.getHighestCard());
-//            }
-//            if(hand1.isOnePair() || hand1.isTwoPair()){
-//                return comparePair(hand1, hand2);
-//            }
-//            if(hand1.isThreeOfAKind()){
-//
-//            }
-//            if(hand1.isStraight()){
-//
-//            }
-//            if(hand1.isFlush()){
-//
-//            }
-//            if(hand1.isStraightFlush()){
-//
-//            }
+            return grouped1.compare(grouped2);
         }
         return false;
     }
-    private static boolean comparePair(Hand hand1, Hand hand2){
-        PairResult pairResult1 = getPairs(hand1);
-        PairResult pairResult2 = getPairs(hand2);
-        if(pairResult1.getPairSum() > pairResult2.getPairSum()){
-            return true;
-        } else if (pairResult1.getPairSum() < pairResult2.getPairSum()){
-            return false;
-        } else {
-            if(pairResult1.getKickerSum() > pairResult2.getKickerSum())
+
+    private static boolean testForStraight(Hand hand){
+        ArrayList<Card> cards = hand.getCards();
+        boolean highStraight =
+                cards.get(0).getRank() - cards.get(4).getRank()
+                == 4;
+        // If cards contain an Ace and it's not a high straight test for Ace high and low straight.
+        if(!highStraight && hand.containsByRank(Rank.ACE)){
+            cards.get(0).setRank(1);
+            cards.sort(Collections.reverseOrder());
+            boolean lowStraight =
+                    cards.get(0).getRank() - cards.get(cards.size()-1).getRank()
+                    == 4;
+
+            // If we didn't find a low straight put rank back.
+            if(lowStraight){
                 return true;
-            return false;
+            } else
+                cards.get(4).setRank(1);
+            cards.sort(Collections.reverseOrder());;
+
         }
+        return highStraight;
     }
 
-    private static boolean compareCard(Card card1, Card card2){
-        if(card1.getRank() > card2.getRank()){
-            return true;
-        } else if(card1.getRank() < card2.getRank()){
-            return false;
-        } else { // They are equal at this point.
-            if(card1.getSuit() > card2.getSuit()){
-                return true;
-            } else {
-                return false;
-            }
-        }
-    }
     /**
      * Calculates a numerical value based off what the hand is by flipping th 0th to 8th
-     * bits in a BitSet and converting the set to an int.
-     * @param hand
-     * @return
+     * bits in a BitSet and converting the set to an int. The higher the value the better.
+     * @param hand Hand to calculate value of.
+     * @return value of hand.
      */
     private static int calcHandValue(Hand hand){
         BitSet bits = new BitSet();
@@ -161,27 +136,13 @@ public class Evaluator {
         bits.set(8, hand.isStraightFlush());
         return (int) bits.toLongArray()[0];
     }
-    private static PairResult getPairs(Hand hand){
-        PairResult result = new PairResult();
-        hand.getHistogram().forEach((rank, frequency) ->{
-            if(frequency == 2) {
-                result.addPairRank(rank);
-                result.setPairSum(result.getPairSum() + rank);
-            }
-            if(frequency == 1){
-                result.setKickerSum(result.getKickerSum() + rank);
-            }
-        });
-        return result;
-    }
+
+    // Can probably modify Grouped to handle this.
     private static HashMap<Integer, Long> getHistogram(ArrayList<Card> cards){
         Frequency frequency = new Frequency();
         cards.forEach(c -> frequency.addValue(c.getRank()));
         HashMap<Integer, Long> histogram = new HashMap<>();
-        cards.forEach(c-> {
-            histogram.put(c.getRank(), frequency.getCount(c.getRank()));
-        });
-//        System.out.println(histogram);
+        cards.forEach(c-> histogram.put(c.getRank(), frequency.getCount(c.getRank())));
         return histogram;
     }
 }

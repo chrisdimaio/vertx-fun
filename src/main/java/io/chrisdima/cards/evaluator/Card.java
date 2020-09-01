@@ -2,10 +2,12 @@ package io.chrisdima.cards.evaluator;
 
 import lombok.Getter;
 import lombok.Setter;
+
 @Getter
 public class Card implements Comparable<Card>{
+    @Setter
     private int rank;
-    private int suit;
+    private final int suit;
 
     public Card(int rank, int suit){
         this.rank = rank;
@@ -22,13 +24,8 @@ public class Card implements Comparable<Card>{
     }
 
     @Override
-    public int hashCode(){
-        return Integer.parseInt(String.valueOf(this.rank) + String.valueOf(this.suit));
-    }
-
-    @Override
     public String toString(){
-        return String.valueOf(rank);
+        return String.valueOf("[r: " + rank + " , s: " + suit + "]");
     }
 }
 

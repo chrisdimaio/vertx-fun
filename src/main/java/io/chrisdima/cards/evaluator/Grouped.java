@@ -6,42 +6,27 @@ import java.util.HashMap;
 
 public class Grouped {
 
-    private HashMap<Card, Group> groups = new HashMap<>();
+    private final HashMap<Integer, Group> groups = new HashMap<>();
 
     public Grouped(Hand hand){
         hand.getCards().forEach(card -> {
-            if(groups.containsKey(card)){
-                groups.get(card).increment();
+            if(groups.containsKey(card.getRank())){
+                Group group = this.groups.get(card.getRank());
+                group.setCount(group.getCount() + 1);
+                groups.put(card.getRank(), group);
             } else {
-                groups.put(card, new Group(card));
+                groups.put(card.getRank(), new Group(card));
             }
         });
     }
 
-    private void add(Card card){
-
-    }
-
-    public Group get(Card card){
-        return groups.get(card);
-    }
-
     public ArrayList<Group> getSortedGroups(){
-//        ArrayList<Card> cards = new ArrayList<>(this.groups.keySet());
-////        System.out.println(this.groups.keySet());
-//        cards.sort(Collections.reverseOrder());
-//
-//        ArrayList<Integer> sortedCounts = new ArrayList<>(this.groups.values());
-//        sortedCounts.sort(Collections.reverseOrder());
-        // NOTE: Sort the keys based off the values.
         ArrayList<Group> sortedGroups = new ArrayList<>(this.groups.values());
         sortedGroups.sort(Collections.reverseOrder());
-        System.out.println(sortedGroups);
         return sortedGroups;
     }
 
-//    @Override
-    public boolean compareTo(Grouped other){
+    public boolean compare(Grouped other){
         ArrayList<Group> thisGroups = this.getSortedGroups();
         ArrayList<Group> otherGroups = other.getSortedGroups();
         for(int i=0; i < 5; i++){
@@ -55,8 +40,8 @@ public class Grouped {
                     return true;
                 if (thisGroup.getCard().getRank() < otherGroup.getCard().getRank())
                     return false;
-            } else { // If card count is 1 it's a kicker, so compare rank & suit.
-                System.out.println("here");
+            } else {
+                // If card count is 1 it's a kicker, compare rank & suit.
                 return thisGroup.getCard().compareTo(otherGroup.getCard()) > 0;
             }
         }
