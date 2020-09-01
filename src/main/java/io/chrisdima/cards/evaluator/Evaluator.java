@@ -35,7 +35,7 @@ public class Evaluator {
         highcard1.add(new Card(Rank.NINE, Suit.SPADES));
 
         ArrayList<Card> highcard2 = new ArrayList<>();
-        highcard2.add(new Card(Rank.TWO, Suit.CLUBS));
+        highcard2.add(new Card(Rank.SEVEN, Suit.CLUBS));
         highcard2.add(new Card(Rank.THREE, Suit.DIAMONDS));
         highcard2.add(new Card(Rank.THREE, Suit.SPADES));
         highcard2.add(new Card(Rank.SIX, Suit.CLUBS));
@@ -90,24 +90,29 @@ public class Evaluator {
         } else if(hand1.getHandValue() < hand2.getHandValue()){
             return false;
         } else if(hand1.getHandValue() == hand2.getHandValue()){
-            if(hand1.isHighCard()){
-                return compareCard(hand1.getHighestCard(), hand2.getHighestCard());
-            }
-            if(hand1.isOnePair() || hand1.isTwoPair()){
-                return comparePair(hand1, hand2);
-            }
-            if(hand1.isThreeOfAKind()){
-
-            }
-            if(hand1.isStraight()){
-
-            }
-            if(hand1.isFlush()){
-
-            }
-            if(hand1.isStraightFlush()){
-
-            }
+//            System.out.println(hand1.getCards());
+//            System.out.println(hand2.getCards());
+            Grouped grouped1 = new Grouped(hand1);
+            Grouped grouped2 = new Grouped(hand2);
+            return grouped1.compareTo(grouped2);
+//            if(hand1.isHighCard()){
+//                return compareCard(hand1.getHighestCard(), hand2.getHighestCard());
+//            }
+//            if(hand1.isOnePair() || hand1.isTwoPair()){
+//                return comparePair(hand1, hand2);
+//            }
+//            if(hand1.isThreeOfAKind()){
+//
+//            }
+//            if(hand1.isStraight()){
+//
+//            }
+//            if(hand1.isFlush()){
+//
+//            }
+//            if(hand1.isStraightFlush()){
+//
+//            }
         }
         return false;
     }

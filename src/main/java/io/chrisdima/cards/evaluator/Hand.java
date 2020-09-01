@@ -3,9 +3,7 @@ package io.chrisdima.cards.evaluator;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
+import java.util.*;
 
 @Getter @Setter
 public class Hand {
@@ -25,10 +23,10 @@ public class Hand {
     private boolean highCard;
 
     public Hand(ArrayList<Card> cards){
-        System.out.println(cards);
         if(cards.size() == 5) {
+            cards.sort(Collections.reverseOrder());
             this.cards = cards;
-            cards.sort(Comparator.comparing(Card::getRank));
+            System.out.println(cards);
         } else {
             throw new IllegalStateException("Requires 5 cards in hand.");
         }
