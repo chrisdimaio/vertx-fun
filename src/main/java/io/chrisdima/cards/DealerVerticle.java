@@ -43,7 +43,10 @@ public class DealerVerticle extends AbstractVerticle {
             if(this.activePlayers == this.playerCount){
                 System.out.println("Table is ready to play!");
                 Collections.shuffle(deck);
-                this.deck.stream().limit(this.activePlayers * CARDS_IN_HAND).forEach(this::sendDealtCard);
+                this.deck
+                        .stream()
+                        .limit(this.activePlayers * CARDS_IN_HAND)
+                        .forEach(this::sendDealtCard);
                 sendShowHand();
             }
         });
