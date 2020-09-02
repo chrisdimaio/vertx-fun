@@ -10,12 +10,10 @@ import static io.chrisdima.cards.Messages.*;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.stream.IntStream;
 
 public class DealerVerticle extends AbstractVerticle {
     private static final String NAME = "DEALER";
 
-    private static final int CARDS_IN_DECK = 52;
     private static final int CARDS_IN_HAND = 5;
 
     private final String dealerAddress;
