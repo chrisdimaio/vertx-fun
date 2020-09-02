@@ -1,5 +1,7 @@
 package io.chrisdima.cards;
 
+import io.chrisdima.cards.evaluator.Card;
+import io.chrisdima.cards.evaluator.Deck;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Promise;
 import io.vertx.core.eventbus.Message;
@@ -20,7 +22,7 @@ public class DealerVerticle extends AbstractVerticle {
     private final String tableAddress;
     private final int playerCount;
 
-    private final ArrayList<Integer> deck = new ArrayList<>(52);
+    private final ArrayList<Card> deck;
 
     private int activePlayers = 0;
 
@@ -29,7 +31,7 @@ public class DealerVerticle extends AbstractVerticle {
         this.tableAddress = tableAddress;
         this.playerCount = playerCount;
 
-        IntStream.iterate(0,i->i+1).limit(CARDS_IN_DECK).forEach(this.deck::add);
+        deck = Deck.getDeck();
     }
 
     @Override
@@ -66,10 +68,10 @@ public class DealerVerticle extends AbstractVerticle {
         originalMessage.reply(message);
     }
 
-    public void sendDealtCard(int card){
+    public void sendDealtCard(Card card){
         PokerMessage message = new PokerMessage();
         message.setCommand(DEALT_CARD);
-        message.setPayload(String.valueOf(card));
+        message.setPayload(card);
         message.setSender(NAME);
         vertx.eventBus().send(this.tableAddress, message);
     }

@@ -38,4 +38,9 @@ public class Hand {
         }
         return false;
     }
+
+    @Override
+    public String toString() {
+        return String.valueOf(cards);
+    }
 }

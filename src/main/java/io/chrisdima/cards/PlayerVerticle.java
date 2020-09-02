@@ -1,5 +1,7 @@
 package io.chrisdima.cards;
 
+import io.chrisdima.cards.evaluator.Card;
+import io.chrisdima.cards.evaluator.Hand;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Promise;
 
@@ -12,7 +14,9 @@ public class PlayerVerticle extends AbstractVerticle {
     private final String dealer_address;
     private final String table_address;
 
-    private ArrayList<Integer> hand = new ArrayList<>();
+    private Hand hand;
+
+    private ArrayList<Card> cards = new ArrayList<>();
 
     public PlayerVerticle(String dealer_address, String table_address, int id) {
         this.name = "Player #" + id;
@@ -25,8 +29,11 @@ public class PlayerVerticle extends AbstractVerticle {
         System.out.println("I'm a player");
         sendReady();
         vertx.eventBus().<PokerMessage>consumer(this.table_address, message->{
-            if(this.hand.size() < 5 && message.body().getCommand().equals(DEALT_CARD)){
-                this.hand.add(Integer.valueOf(message.body().getPayload()));
+            if(this.cards.size() < 5 && message.body().getCommand().equals(DEALT_CARD)){
+                System.out.println(message.body().getPayload());
+                this.cards.add(message.body().getPayload());
+            } else {
+                hand = new Hand(cards);
             }
             if(message.body().getCommand().equals(SHOW_HAND)) {
                 System.out.println(name + "'s hand: " + this.hand);
