@@ -30,13 +30,18 @@ public class PlayerVerticle extends AbstractVerticle {
         sendReady();
         vertx.eventBus().<PokerMessage>consumer(this.table_address, message->{
             if(this.cards.size() < 5 && message.body().getCommand().equals(DEALT_CARD)){
-                System.out.println(message.body().getPayload());
+//                System.out.println(message.body().getPayload());
                 this.cards.add(message.body().getPayload());
             } else {
                 hand = new Hand(cards);
             }
             if(message.body().getCommand().equals(SHOW_HAND)) {
-                System.out.println(name + "'s hand: " + this.hand);
+//                System.out.println(name + "'s hand: " + this.hand);
+                PokerMessage pokerMessage = new PokerMessage();
+                pokerMessage.setCommand(MY_HAND);
+                pokerMessage.setHand(hand);
+                pokerMessage.setSender(name);
+                vertx.eventBus().send(this.dealer_address, pokerMessage);
             }
         });
     }

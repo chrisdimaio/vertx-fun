@@ -1,15 +1,17 @@
 package io.chrisdima.cards;
 
-import io.chrisdima.cards.evaluator.Card;
-import io.chrisdima.cards.evaluator.Deck;
+import io.chrisdima.cards.evaluator.*;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Promise;
 import io.vertx.core.eventbus.Message;
+
+import javax.xml.stream.events.Characters;
 
 import static io.chrisdima.cards.Messages.*;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 
 public class DealerVerticle extends AbstractVerticle {
     private static final String NAME = "DEALER";
@@ -35,20 +37,32 @@ public class DealerVerticle extends AbstractVerticle {
     @Override
     public void start(Promise<Void> starPromise) {
         System.out.println("Dealer verticle is up!");
+        HashMap<Hand, String> table = new HashMap<>();
+
         vertx.eventBus().<PokerMessage>consumer(this.dealerAddress, message->{
             if(message.body().getCommand().equals(READY)) {
                 sendReadyReply(message);
                 this.activePlayers++;
+                if(this.activePlayers == this.playerCount){
+                    System.out.println("Table is ready to play!");
+                    Collections.shuffle(deck);
+                    this.deck
+                            .stream()
+                            .limit(this.activePlayers * CARDS_IN_HAND)
+                            .forEach(this::sendDealtCard);
+                    sendShowHand();
+                }
+            } else if (message.body().getCommand().equals(MY_HAND)) {
+                table.put(message.body().getHand(), message.body().getSender());
             }
-            if(this.activePlayers == this.playerCount){
-                System.out.println("Table is ready to play!");
-                Collections.shuffle(deck);
-                this.deck
-                        .stream()
-                        .limit(this.activePlayers * CARDS_IN_HAND)
-                        .forEach(this::sendDealtCard);
-                sendShowHand();
+            if(table.size() == 5){
+                Hand winner = Evaluator.winner(new ArrayList<>(table.keySet()));
+                System.out.println(table);
+                System.out.println(table.get(winner) + " wins with: " + winner);
+                System.out.println(Character.toChars(0x1F0A0 + 0x1));
+                System.out.println(Unicode.map(Rank.ACE, Suit.SPADES));
             }
+
         });
     }
 
