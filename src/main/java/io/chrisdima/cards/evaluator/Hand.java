@@ -6,7 +6,7 @@ import lombok.Setter;
 import java.util.*;
 
 @Getter @Setter
-public class Hand {
+public class Hand implements Comparable<Hand>{
     private ArrayList<Card> cards;
     private HashMap<Integer, Long> histogram;
     private ArrayList<Long> counts;
@@ -31,12 +31,29 @@ public class Hand {
         }
     }
 
-    public boolean containsByRank(int rank){
+    protected boolean containsByRank(int rank){
         for (Card card: cards) {
             if(card.getRank() == rank)
                 return true;
         }
         return false;
+    }
+
+    @Override
+    public int compareTo(Hand other){
+        if(this.getHandValue() > other.getHandValue()){
+            return 1;
+        } else if(this.getHandValue() < other.getHandValue()){
+            return -1;
+        } else {
+            Grouped grouped1 = new Grouped(this);
+            Grouped grouped2 = new Grouped(other);
+            if(grouped1.compare(grouped2)){
+                return 1;
+            } else {
+                return -1;
+            }
+        }
     }
 
     @Override

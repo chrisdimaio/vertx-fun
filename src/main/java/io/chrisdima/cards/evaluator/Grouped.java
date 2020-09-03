@@ -20,13 +20,13 @@ public class Grouped {
         });
     }
 
-    public ArrayList<Group> getSortedGroups(){
+    private ArrayList<Group> getSortedGroups(){
         ArrayList<Group> sortedGroups = new ArrayList<>(this.groups.values());
         sortedGroups.sort(Collections.reverseOrder());
         return sortedGroups;
     }
 
-    public boolean compare(Grouped other){
+    protected boolean compare(Grouped other){
         ArrayList<Group> thisGroups = this.getSortedGroups();
         ArrayList<Group> otherGroups = other.getSortedGroups();
         for(int i=0; i < 5; i++){

@@ -12,10 +12,10 @@ public class Evaluator {
 
     public static void main( String[] args ){
         ArrayList<Card> quads = new ArrayList<>();
-        quads.add(new Card(Rank.SIX, Suit.CLUBS));
-        quads.add(new Card(Rank.FIVE, Suit.CLUBS));
-        quads.add(new Card(Rank.FOUR, Suit.CLUBS));
-        quads.add(new Card(Rank.THREE, Suit.CLUBS));
+        quads.add(new Card(Rank.KING, Suit.CLUBS));
+        quads.add(new Card(Rank.KING, Suit.HEARTS));
+        quads.add(new Card(Rank.KING, Suit.DIAMONDS));
+        quads.add(new Card(Rank.KING, Suit.SPADES));
         quads.add(new Card(Rank.TWO, Suit.CLUBS));
 
         ArrayList<Card> boat = new ArrayList<>();
@@ -39,10 +39,40 @@ public class Evaluator {
         highcard2.add(new Card(Rank.FOUR, Suit.CLUBS));
         highcard2.add(new Card(Rank.FIVE, Suit.HEARTS));
 
+        Hand hBoat = createHand(boat);
+        Hand hQuads = createHand(quads);
         Hand hand1 = createHand(highcard1);
         Hand hand2 = createHand(highcard2);
-        System.out.println(compareHand(hand1, hand2));
+        ArrayList<Hand> hands = new ArrayList<>();
+        hands.add(hand2);
+        hands.add(hQuads);
+        hands.add(hBoat);
+        hands.add(hand1);
+        System.out.println(hands);
+        hands.sort(Collections.reverseOrder());
+        System.out.println(hands);
+        System.out.println(winner(hands));
     }
+
+    /**
+     * Determines the winner of a list of hands.
+     * @param hands ArrayList of hands to find winner of.
+     * @return The winning hand.
+     */
+    public static Hand winner(ArrayList<Hand> hands){
+        return rankHands(hands).get(0);
+    }
+
+    /**
+     * Ranks hands from highest (winner) to lowest.
+     * @param hands An ArrayList of hands to be ranked
+     * @return Ranked ArrayList of hands.
+     */
+    public static ArrayList<Hand> rankHands(ArrayList<Hand> hands){
+        hands.sort(Collections.reverseOrder());
+        return hands;
+    }
+
     public static Hand createHand(ArrayList<Card> cards){
         Hand hand = new Hand(cards);
         hand.setHistogram(getHistogram(cards));
@@ -75,24 +105,6 @@ public class Evaluator {
         hand.setHandValue(calcHandValue(hand));
         return hand;
     }
-    /**
-     * Returns a boolean indicating which hand wins
-     * @param hand1 Hand that is doing the compare.
-     * @param hand2 Hand that is being compared to.
-     * @return  true if hand1 beats hand2 else false.
-     */
-    public static boolean compareHand(Hand hand1, Hand hand2){
-        if(hand1.getHandValue() > hand2.getHandValue()){
-            return true;
-        } else if(hand1.getHandValue() < hand2.getHandValue()){
-            return false;
-        } else if(hand1.getHandValue() == hand2.getHandValue()){
-            Grouped grouped1 = new Grouped(hand1);
-            Grouped grouped2 = new Grouped(hand2);
-            return grouped1.compare(grouped2);
-        }
-        return false;
-    }
 
     private static boolean testForStraight(Hand hand){
         ArrayList<Card> cards = hand.getCards();
@@ -112,7 +124,7 @@ public class Evaluator {
                 return true;
             } else
                 cards.get(4).setRank(1);
-            cards.sort(Collections.reverseOrder());;
+            cards.sort(Collections.reverseOrder());
 
         }
         return highStraight;

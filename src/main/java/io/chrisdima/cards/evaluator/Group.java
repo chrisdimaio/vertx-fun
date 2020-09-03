@@ -13,10 +13,6 @@ public class Group implements Comparable<Group>{
         this.count = 1;
     }
 
-    public void increment(){
-        this.count++;
-    }
-
     @Override
     public String toString(){
         return "[ card: " + card + ", count: " + count + "]";
