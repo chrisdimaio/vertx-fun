@@ -7,8 +7,8 @@ import java.util.*;
 public class Evaluator {
     private static final List<Long> QUADS = Arrays.asList(1L, 4L);
     private static final List<Long> BOAT = Arrays.asList(2L, 3L);
-    private static final List<Long> THREE_OF_KIND = Arrays.asList(3L, 1L, 1L);
-    private static final List<Long> TWO_PAIR = Arrays.asList(2L, 2L, 1L);
+    private static final List<Long> THREE_OF_KIND = Arrays.asList(1L, 1L, 3L);
+    private static final List<Long> TWO_PAIR = Arrays.asList(1L, 2L, 2L);
 
     public static void main( String[] args ){
         ArrayList<Card> quads = new ArrayList<>();
@@ -54,15 +54,25 @@ public class Evaluator {
         System.out.println(winner(hands));
     }
 
-    /**
+    /**hand
      * Determines the winner of a list of hands.
      * @param hands ArrayList of hands to find winner of.
      * @return The winning hand.
      */
+//    public static Hand winner(ArrayList<Hand> hands){
+//        Hand winner = hands.remove(0);
+//        for(Hand hand: hands){
+//            if(compareHand(hand, winner)) {
+//                compareHand(hand, winner);
+//                winner = hand;
+//            }
+//            compareHand(hand, winner);
+//        }
+//        return winner;
+//    }
     public static Hand winner(ArrayList<Hand> hands){
         return rankHands(hands).get(0);
     }
-
     /**
      * Ranks hands from highest (winner) to lowest.
      * @param hands An ArrayList of hands to be ranked
@@ -71,6 +81,19 @@ public class Evaluator {
     public static ArrayList<Hand> rankHands(ArrayList<Hand> hands){
         hands.sort(Collections.reverseOrder());
         return hands;
+    }
+
+    public static boolean compareHand(Hand hand1, Hand hand2){
+        if(hand1.getHandValue() > hand2.getHandValue()){
+            return true;
+        } else if(hand1.getHandValue() < hand2.getHandValue()){
+            return false;
+        } else if(hand1.getHandValue() == hand2.getHandValue()){
+            Grouped grouped1 = new Grouped(hand1);
+            Grouped grouped2 = new Grouped(hand2);
+            return grouped1.compare(grouped2);
+        }
+        return false;
     }
 
     public static Hand createHand(ArrayList<Card> cards){
@@ -100,7 +123,7 @@ public class Evaluator {
         hand.setHighCard(!(hand.isQuads() || hand.isBoat() || hand.isThreeOfAKind() || hand.isTwoPair() || hand.isOnePair()
                 || hand.isFlush()||hand.isStraight()||hand.isStraightFlush()));
         if(hand.isHighCard()) {
-            hand.setHighestCard(cards.get(cards.size()-1));
+            hand.setHighestCard(cards.get(0));
         }
         hand.setHandValue(calcHandValue(hand));
         return hand;

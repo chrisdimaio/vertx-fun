@@ -1,6 +1,7 @@
 package io.chrisdima.cards;
 
 import io.chrisdima.cards.evaluator.Card;
+import io.chrisdima.cards.evaluator.Evaluator;
 import io.chrisdima.cards.evaluator.Hand;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Promise;
@@ -33,7 +34,7 @@ public class PlayerVerticle extends AbstractVerticle {
 //                System.out.println(message.body().getPayload());
                 this.cards.add(message.body().getPayload());
             } else {
-                hand = new Hand(cards);
+                hand = Evaluator.createHand(cards);
             }
             if(message.body().getCommand().equals(SHOW_HAND)) {
 //                System.out.println(name + "'s hand: " + this.hand);

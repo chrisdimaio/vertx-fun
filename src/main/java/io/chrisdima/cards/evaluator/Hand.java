@@ -42,9 +42,9 @@ public class Hand implements Comparable<Hand>{
     @Override
     public int compareTo(Hand other){
         if(this.getHandValue() > other.getHandValue()){
-            return 1;
+            return this.getHandValue() - other.getHandValue();
         } else if(this.getHandValue() < other.getHandValue()){
-            return -1;
+            return this.getHandValue() - other.getHandValue();
         } else {
             Grouped grouped1 = new Grouped(this);
             Grouped grouped2 = new Grouped(other);

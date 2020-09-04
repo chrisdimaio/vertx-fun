@@ -57,10 +57,10 @@ public class DealerVerticle extends AbstractVerticle {
             }
             if(table.size() == 5){
                 Hand winner = Evaluator.winner(new ArrayList<>(table.keySet()));
-                System.out.println(table);
+                for (Hand hand : table.keySet()) {
+                    System.out.println(table.get(hand) + ": " + hand);
+                }
                 System.out.println(table.get(winner) + " wins with: " + winner);
-                System.out.println(Character.toChars(0x1F0A0 + 0x1));
-                System.out.println(Unicode.map(Rank.ACE, Suit.SPADES));
             }
 
         });
