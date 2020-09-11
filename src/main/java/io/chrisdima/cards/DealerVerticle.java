@@ -1,11 +1,9 @@
 package io.chrisdima.cards;
 
-import io.chrisdima.cards.evaluator.*;
+import io.chrisdima.poker.evaluator.*;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Promise;
 import io.vertx.core.eventbus.Message;
-
-import javax.xml.stream.events.Characters;
 
 import static io.chrisdima.cards.Messages.*;
 

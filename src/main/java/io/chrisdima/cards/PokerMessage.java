@@ -1,7 +1,7 @@
 package io.chrisdima.cards;
 
-import io.chrisdima.cards.evaluator.Card;
-import io.chrisdima.cards.evaluator.Hand;
+import io.chrisdima.poker.evaluator.Card;
+import io.chrisdima.poker.evaluator.Hand;
 import lombok.Getter;
 import lombok.Setter;
 

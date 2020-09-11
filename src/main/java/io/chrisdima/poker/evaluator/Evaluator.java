@@ -1,4 +1,4 @@
-package io.chrisdima.cards.evaluator;
+package io.chrisdima.poker.evaluator;
 
 import org.apache.commons.math3.stat.Frequency;
 

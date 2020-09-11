@@ -1,8 +1,8 @@
 package io.chrisdima.cards;
 
-import io.chrisdima.cards.evaluator.Card;
-import io.chrisdima.cards.evaluator.Evaluator;
-import io.chrisdima.cards.evaluator.Hand;
+import io.chrisdima.poker.evaluator.Card;
+import io.chrisdima.poker.evaluator.Evaluator;
+import io.chrisdima.poker.evaluator.Hand;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Promise;
 

@@ -1,4 +1,4 @@
-package io.chrisdima.cards.evaluator;
+package io.chrisdima.poker.evaluator;
 
 public class Rank {
     public static final int TWO = 2;

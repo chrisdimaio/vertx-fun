@@ -1,4 +1,4 @@
-package io.chrisdima.cards.evaluator;
+package io.chrisdima.poker.evaluator;
 
 public class Suit {
     public static final int CLUBS = 0;

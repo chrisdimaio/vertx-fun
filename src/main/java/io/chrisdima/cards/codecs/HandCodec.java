@@ -2,7 +2,7 @@ package io.chrisdima.cards.codecs;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.chrisdima.cards.evaluator.Hand;
+import io.chrisdima.poker.evaluator.Hand;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.eventbus.MessageCodec;
 
