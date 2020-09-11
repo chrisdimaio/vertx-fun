@@ -166,9 +166,10 @@ public class Evaluator {
         bits.set(3, hand.isTwoPair());
         bits.set(4, hand.isThreeOfAKind());
         bits.set(5, hand.isStraight());
-        bits.set(6, hand.isBoat());
-        bits.set(7, hand.isQuads());
-        bits.set(8, hand.isStraightFlush());
+        bits.set(6, hand.isFlush());
+        bits.set(7, hand.isBoat());
+        bits.set(8, hand.isQuads());
+        bits.set(9, hand.isStraightFlush());
         return (int) bits.toLongArray()[0];
     }
 
